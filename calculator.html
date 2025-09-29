@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RPN计算器在线演示 - 基于C++版本</title>
+    <style>
+        body { 
+            font-family: 'Consolas', 'Monaco', monospace; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #007acc;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .calculator {
+            background: #252526;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #3c3c3c;
+        }
+        .display {
+            background: #1e1e1e;
+            border: 1px solid #3c3c3c;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            min-height: 100px;
+            font-family: 'Consolas', monospace;
+            white-space: pre-wrap;
+        }
+        .input-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        #userInput {
+            flex: 1;
+            background: #1e1e1e;
+            border: 1px solid #3c3c3c;
+            color: #d4d4d4;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+        }
+        button {
+            background: #007acc;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Consolas', monospace;
+        }
+        button:hover {
+            background: #005a9e;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+        .num-btn { background: #4d4d4d; }
+        .op-btn { background: #d16969; }
+        .func-btn { background: #b5cea8; color: #1e1e1e; }
+        .cmd-btn { background: #ce9178; color: #1e1e1e; }
+        .stack-info {
+            background: #2d2d30;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+        .error { color: #f44747; }
+        .result { color: #4ec9b0; }
+        .prompt { color: #569cd6; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>RPN计算器在线演示</h1>
+        <p>基于你的 C++ 代码实现</p>
+    </div>
+
+    <div class="calculator">
+        <div class="display" id="output">
+&gt; 欢迎使用 RPN 计算器
+&gt; 输入表达式或点击按钮进行计算
+&gt; 特殊命令: clear, display, quit
+&gt; 
+        </div>
+
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="输入表达式，如: 5 3 +" onkeypress="handleKeyPress(event)">
+            <button onclick="processInput()">执行</button>
+        </div>
+
+        <div class="buttons">
+            <button class="num-btn" onclick="addToInput('7')">7</button>
+            <button class="num-btn" onclick="addToInput('8')">8</button>
+            <button class="num-btn" onclick="addToInput('9')">9</button>
+            <button class="op-btn" onclick="addToInput('+')">+</button>
+            <button class="func-btn" onclick="addToInput('sqrt')">sqrt</button>
+            <button class="cmd-btn" onclick="addToInput('clear')">clear</button>
+
+            <button class="num-btn" onclick="addToInput('4')">4</button>
+            <button class="num-btn" onclick="addToInput('5')">5</button>
+            <button class="num-btn" onclick="addToInput('6')">6</button>
+            <button class="op-btn" onclick="addToInput('-')">-</button>
+            <button class="func-btn" onclick="addToInput('fib')">fib</button>
+            <button class="cmd-btn" onclick="addToInput('display')">display</button>
+
+            <button class="num-btn" onclick="addToInput('1')">1</button>
+            <button class="num-btn" onclick="addToInput('2')">2</button>
+            <button class="num-btn" onclick="addToInput('3')">3</button>
+            <button class="op-btn" onclick="addToInput('*')">×</button>
+            <button class="func-btn" onclick="addToInput('pascal')">pascal</button>
+            <button class="cmd-btn" onclick="quit()">quit</button>
+
+            <button class="num-btn" onclick="addToInput('0')">0</button>
+            <button class="num-btn" onclick="addToInput('.')">.</button>
+            <button class="op-btn" onclick="addToInput('/')">/</button>
+            <button class="op-btn" onclick="addToInput('^')">^</button>
+            <button class="num-btn" onclick="addToInput(' ')" style="grid-column: span 2;">空格</button>
+        </div>
+
+        <div class="stack-info">
+            <strong>当前栈状态:</strong>
+            <div id="stackDisplay">空</div>
+        </div>
+    </div>
+
+    <script>
+        let stack = [];
+        let outputElement = document.getElementById('output');
+        let inputElement = document.getElementById('userInput');
+        let stackDisplay = document.getElementById('stackDisplay');
+
+        function updateStackDisplay() {
+            if (stack.length === 0) {
+                stackDisplay.innerHTML = '空';
+            } else {
+                stackDisplay.innerHTML = stack.map((val, index) => 
+                    `<span style="color: #${getColorForIndex(index)}">${formatNumber(val)}</span>`
+                ).join(' ← ');
+            }
+        }
+
+        function getColorForIndex(index) {
+            const colors = ['4ec9b0', '569cd6', 'c586c0', 'dcdcaa', '9cdcfe'];
+            return colors[index % colors.length];
+        }
+
+        function formatNumber(num) {
+            return num === Math.floor(num) ? num.toString() : num.toFixed(6).replace(/\.?0+$/, '');
+        }
+
+        function addToInput(value) {
+            inputElement.value += (inputElement.value ? ' ' : '') + value;
+            inputElement.focus();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                processInput();
+            }
+        }
+
+        function appendOutput(text, className = '') {
+            outputElement.innerHTML += `<span class="${className}">${text}</span>\n`;
+            outputElement.scrollTop = outputElement.scrollHeight;
+        }
+
+        function fibonacci(n) {
+            if (n < 0) throw new Error("斐波那契数列输入必须为非负数");
+            if (n === 0) return 0;
+            if (n === 1) return 1;
+
+            let a = 0, b = 1;
+            for (let i = 2; i <= n; i++) {
+                let temp = a + b;
+                a = b;
+                b = temp;
+            }
+            return b;
+        }
+
+        function binomialCoefficient(n, k) {
+            if (k < 0 || k > n) return 0;
+            if (k === 0 || k === n) return 1;
+
+            let result = 1;
+            for (let i = 1; i <= k; i++) {
+                result = result * (n - i + 1) / i;
+            }
+            return result;
+        }
+
+        function processInput() {
+            const input = inputElement.value.trim();
+            if (!input) return;
+
+            appendOutput(`> ${input}`, 'prompt');
+            inputElement.value = '';
+
+            try {
+                if (input === 'clear') {
+                    stack = [];
+                    appendOutput('栈已清空');
+                } else if (input === 'display') {
+                    appendOutput(`栈内容 [底 -> 顶]: ${stack.length ? stack.map(formatNumber).join(' ') : '空'}`);
+                } else if (input === 'quit' || input === 'q') {
+                    appendOutput('感谢使用RPN计算器！');
+                    return;
+                } else {
+                    const tokens = input.split(/\s+/);
+                    
+                    for (let token of tokens) {
+                        if (['+', '-', '*', '/', '^'].includes(token)) {
+                            // 二元操作
+                            if (stack.length < 2) {
+                                throw new Error(`错误: ${token} 需要两个操作数`);
+                            }
+                            const b = stack.pop();
+                            const a = stack.pop();
+                            
+                            let result;
+                            switch(token) {
+                                case '+': result = a + b; break;
+                                case '-': result = a - b; break;
+                                case '*': result = a * b; break;
+                                case '/': 
+                                    if (b === 0) throw new Error("错误: 除零错误");
+                                    result = a / b; 
+                                    break;
+                                case '^': result = Math.pow(a, b); break;
+                            }
+                            stack.push(result);
+                        } else if (token === 'sqrt') {
+                            // 一元操作
+                            if (stack.length < 1) {
+                                throw new Error("错误: sqrt 需要一个操作数");
+                            }
+                            const a = stack.pop();
+                            if (a < 0) throw new Error("错误: 不能对负数求平方根");
+                            stack.push(Math.sqrt(a));
+                        } else if (token === 'fib') {
+                            if (stack.length < 1) throw new Error("错误: 斐波那契需要一个操作数");
+                            const n = stack.pop();
+                            if (n < 0 || n !== Math.floor(n)) {
+                                throw new Error("错误: 斐波那契输入必须为非负整数");
+                            }
+                            stack.push(fibonacci(n));
+                        } else if (token === 'pascal') {
+                            if (stack.length < 2) throw new Error("错误: 杨辉三角需要两个操作数");
+                            const k = stack.pop();
+                            const n = stack.pop();
+                            if (n < 0 || k < 0 || n !== Math.floor(n) || k !== Math.floor(k)) {
+                                throw new Error("错误: 杨辉三角输入必须为非负整数");
+                            }
+                            stack.push(binomialCoefficient(n, k));
+                        } else {
+                            // 数字输入
+                            const num = parseFloat(token);
+                            if (isNaN(num)) {
+                                throw new Error(`错误: 无效的输入 '${token}'`);
+                            }
+                            stack.push(num);
+                        }
+                    }
+
+                    if (stack.length > 0) {
+                        appendOutput(`结果: ${formatNumber(stack[stack.length - 1])}`, 'result');
+                    }
+                }
+            } catch (error) {
+                appendOutput(error.message, 'error');
+            }
+
+            updateStackDisplay();
+        }
+
+        function quit() {
+            appendOutput('感谢使用RPN计算器！');
+        }
+
+        // 初始化
+        updateStackDisplay();
+        inputElement.focus();
+    </script>
+</body>
+</html>
