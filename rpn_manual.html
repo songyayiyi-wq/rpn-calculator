@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RPN计算器使用说明</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 40px;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { 
+            color: #2c3e50; 
+            text-align: center;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+        }
+        code { 
+            background: #f8f9fa; 
+            padding: 3px 6px; 
+            border-radius: 3px;
+            border: 1px solid #e9ecef;
+            font-family: Consolas, monospace;
+        }
+        pre { 
+            background: white; 
+            color: black; 
+            padding: 15px; 
+            border-radius: 5px;
+            overflow-x: auto;
+            border-left: 4px solid #3498db;
+            border: 1px solid #ddd;
+        }
+        table { 
+            border-collapse: collapse; 
+            width: 100%; 
+            margin: 20px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 12px; 
+            text-align: left; 
+        }
+th { 
+            background: #3498db; 
+            color: white; 
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        ul {
+            background: #f8f9fa;
+            padding: 15px 30px;
+            border-radius: 5px;
+        }
+        li {
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>RPN计算器使用说明</h1>
+        
+        <h2>安装编译</h2>
+        <pre><code>g++ -std=c++11 -o rpn_calc rpn_calc.cpp</code></pre>
+        
+        <h2>使用示例</h2>
+        <pre><code>&gt; 5 3 +
+结果: 8
+&gt; 1 2 + 3 *
+结果: 9</code></pre>
+        
+        <h2>支持的操作符</h2>
+        <table>
+            <tr><th>操作符</th><th>功能</th><th>示例</th><th>结果</th></tr>
+            <tr><td><code>+</code></td><td>加法</td><td><code>5 3 +</code></td><td>8</td></tr>
+            <tr><td><code>-</code></td><td>减法</td><td><code>5 3 -</code></td><td>2</td></tr>
+            <tr><td><code>*</code></td><td>乘法</td><td><code>2 4 *</code></td><td>8</td></tr>
+            <tr><td><code>/</code></td><td>除法</td><td><code>6 2 /</code></td><td>3</td></tr>
+            <tr><td><code>sqrt</code></td><td>平方根</td><td><code>16 sqrt</code></td><td>4</td></tr>
+            <tr><td><code>^</code></td><td>幂运算</td><td><code>2 3 ^</code></td><td>8</td></tr>
+            <tr><td><code>fib</code></td><td>斐波那契</td><td><code>5 fib</code></td><td>5</td></tr>
+            <tr><td><code>pascal</code></td><td>杨辉三角</td><td><code>4 2 pascal</code></td><td>6</td></tr>
+        </table>
+        
+        <h2>特殊命令</h2>
+        <ul>
+            <li><code>clear</code> - 清空栈</li>
+            <li><code>display</code> - 显示栈内容</li>
+            <li><code>q</code> - 退出程序</li>
+        </ul>
+        
+        <p><em>文档生成时间: 2025年1月</em></p>
+    </div>
+</body>
+</html>
