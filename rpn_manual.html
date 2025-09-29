@@ -27,6 +27,8 @@
         h2 {
             color: #34495e;
             margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
         }
         code { 
             background: #f8f9fa; 
@@ -55,7 +57,7 @@
             padding: 12px; 
             text-align: left; 
         }
-th { 
+        th { 
             background: #3498db; 
             color: white; 
             font-weight: bold;
@@ -71,42 +73,136 @@ th {
         li {
             margin: 8px 0;
         }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .example {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>RPN计算器使用说明</h1>
         
-        <h2>安装编译</h2>
-        <pre><code>g++ -std=c++11 -o rpn_calc rpn_calc.cpp</code></pre>
+        <h2>📥 安装编译</h2>
+        <pre><code># 使用 g++ 编译
+g++ -std=c++11 -o rpn_calc rpn_calc.cpp
+
+# 运行程序
+./rpn_calc</code></pre>
         
-        <h2>使用示例</h2>
-        <pre><code>&gt; 5 3 +
+        <h2>🚀 快速开始</h2>
+        <div class="example">
+            <p><strong>启动程序后，您将看到提示符：</strong></p>
+            <pre><code>RPN Calculator > </code></pre>
+            <p>在此输入 RPN 表达式进行计算</p>
+        </div>
+
+        <h2>📚 基本使用示例</h2>
+        <pre><code>RPN Calculator > 5 3 +
 结果: 8
-&gt; 1 2 + 3 *
-结果: 9</code></pre>
-        
-        <h2>支持的操作符</h2>
+
+RPN Calculator > 1 2 + 3 *
+结果: 9
+
+RPN Calculator > 2 3 ^ 4 +
+结果: 12
+
+RPN Calculator > 16 sqrt
+结果: 4</code></pre>
+
+        <h2>🔧 支持的操作符</h2>
         <table>
-            <tr><th>操作符</th><th>功能</th><th>示例</th><th>结果</th></tr>
-            <tr><td><code>+</code></td><td>加法</td><td><code>5 3 +</code></td><td>8</td></tr>
-            <tr><td><code>-</code></td><td>减法</td><td><code>5 3 -</code></td><td>2</td></tr>
-            <tr><td><code>*</code></td><td>乘法</td><td><code>2 4 *</code></td><td>8</td></tr>
-            <tr><td><code>/</code></td><td>除法</td><td><code>6 2 /</code></td><td>3</td></tr>
-            <tr><td><code>sqrt</code></td><td>平方根</td><td><code>16 sqrt</code></td><td>4</td></tr>
-            <tr><td><code>^</code></td><td>幂运算</td><td><code>2 3 ^</code></td><td>8</td></tr>
-            <tr><td><code>fib</code></td><td>斐波那契</td><td><code>5 fib</code></td><td>5</td></tr>
-            <tr><td><code>pascal</code></td><td>杨辉三角</td><td><code>4 2 pascal</code></td><td>6</td></tr>
+            <tr><th>操作符</th><th>功能</th><th>所需操作数</th><th>示例</th><th>结果</th></tr>
+            <tr><td><code>+</code></td><td>加法</td><td>2</td><td><code>5 3 +</code></td><td>8</td></tr>
+            <tr><td><code>-</code></td><td>减法</td><td>2</td><td><code>5 3 -</code></td><td>2</td></tr>
+            <tr><td><code>*</code></td><td>乘法</td><td>2</td><td><code>2 4 *</code></td><td>8</td></tr>
+            <tr><td><code>/</code></td><td>除法</td><td>2</td><td><code>6 2 /</code></td><td>3</td></tr>
+            <tr><td><code>sqrt</code></td><td>平方根</td><td>1</td><td><code>16 sqrt</code></td><td>4</td></tr>
+            <tr><td><code>^</code></td><td>幂运算</td><td>2</td><td><code>2 3 ^</code></td><td>8</td></tr>
+            <tr><td><code>fib</code></td><td>斐波那契</td><td>1</td><td><code>5 fib</code></td><td>5</td></tr>
+            <tr><td><code>pascal</code></td><td>杨辉三角</td><td>2</td><td><code>4 2 pascal</code></td><td>6</td></tr>
         </table>
-        
-        <h2>特殊命令</h2>
+
+        <h2>⚡ 特殊命令</h2>
         <ul>
             <li><code>clear</code> - 清空栈</li>
-            <li><code>display</code> - 显示栈内容</li>
-            <li><code>q</code> - 退出程序</li>
+            <li><code>display</code> - 显示当前栈内容</li>
+            <li><code>help</code> - 显示帮助信息</li>
+            <li><code>q</code> 或 <code>quit</code> - 退出程序</li>
         </ul>
-        
+
+        <h2>❌ 错误代码和异常说明</h2>
+        <div class="warning">
+            <table>
+                <tr><th>错误类型</th><th>原因</th><th>解决方法</th></tr>
+                <tr><td><code>错误: 栈为空</code></td><td>尝试从空栈中弹出元素</td><td>确保输入足够的操作数</td></tr>
+                <tr><td><code>错误: 除零</code></td><td>除数为零</td><td>检查除数是否为零</td></tr>
+                <tr><td><code>错误: 无效操作符</code></td><td>输入了不支持的操作符</td><td>检查操作符拼写</td></tr>
+                <tr><td><code>错误: 栈不足</code></td><td>操作数不足</td><td>二元操作需要2个操作数，一元操作需要1个</td></tr>
+                <tr><td><code>错误: 无效数字</code></td><td>输入了非数字字符</td><td>确保输入有效的数字</td></tr>
+            </table>
+        </div>
+
+        <h2>🎯 完整示例输入输出</h2>
+        <pre><code>RPN Calculator > 5
+栈: 5
+
+RPN Calculator > 3
+栈: 5 3
+
+RPN Calculator > +
+结果: 8
+
+RPN Calculator > 2
+栈: 8 2
+
+RPN Calculator > *
+结果: 16
+
+RPN Calculator > sqrt
+结果: 4
+
+RPN Calculator > display
+当前栈: 4
+
+RPN Calculator > clear
+栈已清空
+
+RPN Calculator > 10 4 /
+结果: 2.5
+
+RPN Calculator > 0 /
+错误: 除零
+
+RPN Calculator > 5 fib
+结果: 5
+
+RPN Calculator > q
+再见!</code></pre>
+
+        <h2>💡 使用技巧</h2>
+        <ul>
+            <li>使用空格分隔数字和操作符</li>
+            <li>一元操作符（如 <code>sqrt</code>）只需要一个操作数</li>
+            <li>二元操作符（如 <code>+ - * /</code>）需要两个操作数</li>
+            <li>使用 <code>display</code> 命令查看当前栈状态</li>
+            <li>复杂的计算可以分步进行</li>
+        </ul>
+
         <p><em>文档生成时间: 2025年9月</em></p>
+        <p><strong>更多帮助请在程序中输入 <code>help</code> 命令</strong></p>
     </div>
 </body>
 </html>
