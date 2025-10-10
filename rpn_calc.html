@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <title>rpn_calc.nim</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🐳</text></svg>">
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <meta content="nimib 0.3.12" name="generator">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/light.min.css">
+  <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/pietroppeter/nimib/assets/atom-one-light.css'>
+    <script src="https://cdn.jsdelivr.net/gh/pietroppeter/nimib@main/assets/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+  <style>
+.nb-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nb-small {
+  font-size: 0.8rem;
+}
+button.nb-small {
+  float: right;
+  padding: 2px;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+section#source {
+  display:none
+}
+pre > code {
+  font-size: 1.2em;
+}
+.nb-output {
+  line-height: 1.15;
+}
+figure {
+  margin: 2rem 0;
+}
+figcaption {
+  text-align: center;
+}
+  
+</style>
+  
+</head>
+<body>
+<header>
+<div class="nb-box">
+  <span><a href=".">🏡</a></span>
+  <span><code>rpn_calc.nim</code></span>
+  <span></span>
+</div>
+<hr>
+</header><main>
+<h1>《RPN计算器使用说明》</h1>
+<ul>
+<li>作者：王凌</li>
+<li>版本：2.1.1</li>
+</ul>
+<h2>目录:</h2>
+<ol>
+<li><a href="#功能概述">功能概述</a></li>
+<li><a href="#安装和编译指南">安装和编译指南</a></li>
+<li><a href="#基本使用示例">基本使用示例</a></li>
+<li><a href="#所有支持的操作说明">所有支持的操作说明</a></li>
+<li><a href="#错误代码和异常说明">错误代码和异常说明</a></li>
+<li><a href="#示例输入输出">示例输入输出</a></li>
+<li><a href="#使用技巧和注意事项">使用技巧和注意事项</a></li>
+</ol>
+<p><a name="功能概述"></a></p>
+<br>
+<h3>功能概述</h3>
+<hr />
+<p>RPN计算器是一个基于逆波兰表示法（Reverse Polish Notation）的命令行计算工具，具有以下核心功能：</p>
+<h4>主要特性</h4>
+<ul>
+<li><strong>逆波兰表示法</strong>：采用后缀表达式，无需括号即可处理复杂运算优先级</li>
+<li><strong>丰富的数学运算</strong>：支持四则运算、幂运算、平方根、斐波那契数列、杨辉三角等</li>
+<li><strong>栈式操作</strong>：基于栈的数据结构，自动保存中间计算结果</li>
+<li><strong>完善的错误处理</strong>：提供清晰的错误提示和异常处理机制</li>
+<li><strong>跨平台支持</strong>：兼容Linux、macOS、Windows操作系统</li>
+<li><strong>批量处理功能</strong>：支持从文件读取表达式进行批量计算</li>
+</ul>
+<h4>技术特点</h4>
+<ul>
+<li>使用C++11标准编写，代码简洁高效</li>
+<li>无外部依赖，纯标准库实现</li>
+<li>支持整数和浮点数混合运算</li>
+<li>提供栈查看、清空等管理功能</li>
+</ul>
+<p><a name="安装和编译指南"></a></p>
+<br>
+<h3>安装和编译指南</h3>
+<hr />
+<p>系统要求<br>
+操作系统：Ubuntu 20.04 及以上版本，或任何支持g++的Linux发行版<br>
+依赖工具：g++ 编译器</p>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+安装依赖
+# 更新软件源
+sudo apt update
+
+# 安装g++编译器
+sudo apt install -y g++
+
+# 验证安装
+g++ --version
+&quot;&quot;&quot;</span></code></pre>
+<p>编译程序<br>
+将源代码保存为rpn_calc.cpp后，执行以下命令编译：</p>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+# 编译源码
+g++ -std=c++11 -o rpn_calc rpn_calc.cpp
+
+# 运行计算器
+./rpn_calc
+&quot;&quot;&quot;</span></code></pre>
+<p><a name="基本使用示例"></a></p>
+<br>
+<h3>基本使用示例</h3>
+<hr />
+<p>RPN计算器使用逆波兰表示法，不需要括号，运算顺序由输入顺序决定。</p>
+<h4>基本使用流程</h4>
+<ul>
+<li>输入数字，按空格分隔</li>
+<li>输入运算符进行计算</li>
+<li>计算器自动显示结果</li>
+<li>使用特殊命令管理计算过程</li>
+</ul>
+<h4>简单示例</h4>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+# 启动计算器
+./rpn_calc
+
+# 基本运算
+RPN Calculator &gt; 3 5 +
+结果: 8
+
+RPN Calculator &gt; 10 4 -
+结果: 6
+
+RPN Calculator &gt; 2 4 + 3 *
+结果: 18
+&quot;&quot;&quot;</span></code></pre>
+<p><a name="所有支持的操作说明"></a></p>
+<br>
+<h3>所有支持的操作说明</h3>
+<hr />
+<h4>基本四则运算</h4>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+&gt; 5 3 +
+结果: 8
+&gt; 10 4 -
+结果: 6
+&gt; 6 7 *
+结果: 42
+&gt; 15 2 /
+结果: 7.5
+&quot;&quot;&quot;</span></code></pre>
+<h4>高级数学运算</h4>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+&gt; 16 sqrt
+结果: 4
+&gt; 2 5 ^
+结果: 32
+&gt; 7 fib
+结果: 13
+&gt; 5 2 pascal
+结果: 10
+&quot;&quot;&quot;</span></code></pre>
+<h4>栈操作命令</h4>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+&gt; 5 3 7
+&gt; display
+当前栈：5 3 7
+&gt; clear
+栈已清空
+&gt; display
+当前栈：空
+&quot;&quot;&quot;</span></code></pre>
+<h4>其他命令</h4>
+<ul>
+<li><code>help</code> - 显示帮助信息</li>
+<li><code>q</code> / <code>quit</code> - 退出程序</li>
+</ul>
+<p><a name="错误代码和异常说明"></a></p>
+<br>
+<h3>错误代码和异常说明</h3>
+<hr />
+<h4>常见错误类型</h4>
+<p>栈为空错误</p>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+&gt; +
+错误: 栈为空
+&gt; 4 6 +
+结果: 10
+&quot;&quot;&quot;</span></code></pre>
+<p>除零错误</p>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+&gt; 10 0 /
+错误: 除零
+&gt; 10 2 /
+结果: 5.0
+&quot;&quot;&quot;</span></code></pre>
+<p>无效操作符错误</p>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+&gt; 7 2 #
+错误: 无效操作符
+&gt; 7 2 *
+结果: 14
+&quot;&quot;&quot;</span></code></pre>
+<p>栈不足错误</p>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+&gt; 5 *
+错误: 栈不足
+&gt; 5 3 *
+结果: 15
+&quot;&quot;&quot;</span></code></pre>
+<p>无效数字错误</p>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+&gt; abc 3 +
+错误: 无效数字
+&gt; 4.5 3 +
+结果: 7.5
+&quot;&quot;&quot;</span></code></pre>
+<p><a name="示例输入输出"></a></p>
+<br>
+<h3>示例输入输出</h3>
+<hr />
+<p>完整的使用示例：</p>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+# 启动程序
+./rpn_calc
+
+# 基本运算
+RPN Calculator &gt; 12 8 +
+结果: 20
+
+RPN Calculator &gt; 5 *
+结果: 100
+
+# 高级函数
+RPN Calculator &gt; sqrt
+结果: 10.0
+
+# 栈管理
+RPN Calculator &gt; display
+当前栈：10.0
+
+# 错误处理
+RPN Calculator &gt; 0 /
+错误: 除零
+
+# 清空栈
+RPN Calculator &gt; clear
+栈已清空
+
+# 数学序列
+RPN Calculator &gt; 8 fib
+结果: 21
+
+RPN Calculator &gt; 6 3 pascal
+结果: 20
+
+# 获取帮助
+RPN Calculator &gt; help
+================= RPN 计算器帮助 =================
+支持操作符：+（加）、-（减）、*（乘）、/（除）、sqrt（平方根）、^（幂运算）、fib（斐波那契）、pascal（杨辉三角）
+特殊命令：clear（清空栈）、display（显示栈）、help（查看帮助）、q/quit（退出）
+输入规则：操作数与运算符用空格分隔，按回车计算
+================================================
+
+# 退出程序
+RPN Calculator &gt; q
+再见!
+&quot;&quot;&quot;</span></code></pre>
+<p><a name="使用技巧和注意事项"></a></p>
+<br>
+<h3>使用技巧和注意事项</h3>
+<hr />
+<h4>使用技巧</h4>
+<p><strong>分步计算复杂表达式</strong><br>
+对于复杂公式如 <code>(3 + 4) * (6 - 2) / 2</code>，可分步输入：</p>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+RPN Calculator &gt; 3 4 +
+结果: 7
+RPN Calculator &gt; 6 2 -
+结果: 4
+RPN Calculator &gt; *
+结果: 28
+RPN Calculator &gt; 2 /
+结果: 14.0
+&quot;&quot;&quot;</span></code></pre>
+<p><strong>利用栈保存中间结果</strong><br>
+栈会自动保留未参与后续运算的结果：</p>
+<pre><code class="nohighlight hljs nim"><span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+RPN Calculator &gt; 10 5 +
+结果: 15
+RPN Calculator &gt; 3 *
+结果: 45
+&quot;&quot;&quot;</span></code></pre>
+<h4>注意事项</h4>
+<ul>
+<li>操作数与运算符必须用<strong>空格分隔</strong></li>
+<li>支持整数和浮点数混合运算，结果以浮点数形式显示</li>
+<li>斐波那契数参数建议不超过40</li>
+<li>杨辉三角行数建议不超过30</li>
+<li>程序退出后不保存历史记录</li>
+</ul>
+</main>
+<footer>
+<div class="nb-box">
+  <span><span class="nb-small">made with <a href="https://pietroppeter.github.io/nimib/">nimib 🐳</a></span></span>
+  <span></span>
+  <span><button class="nb-small" id="show" onclick="toggleSourceDisplay()">Show Source</button></span>
+</div>
+</footer>
+<section id="source">
+<pre><code class="nohighlight nim hljs"><span class="hljs-keyword">import</span> std/strutils
+<span class="hljs-keyword">import</span> nimib
+<span class="hljs-comment">#import ./theme/codeOutput</span>
+
+<span class="hljs-keyword">var</span> nbToc: <span class="hljs-type">NbBlock</span>
+
+<span class="hljs-keyword">template</span> addToc =
+  newNbBlock(<span class="hljs-string">&quot;nbText&quot;</span>, <span class="hljs-literal">false</span>, nb, nbToc, <span class="hljs-string">&quot;&quot;</span>):
+    nbToc.output = <span class="hljs-string">&quot;## 目录:</span><span class="hljs-meta">\n</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span>
+
+<span class="hljs-keyword">template</span> nbNewSection(name:<span class="hljs-built_in">string</span>) =
+  <span class="hljs-keyword">let</span> anchorName = name.toLower.replace(<span class="hljs-string">&quot; &quot;</span>, <span class="hljs-string">&quot;-&quot;</span>)
+  nbText <span class="hljs-string">&quot;&lt;a name=</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">&quot;</span> &amp; anchorName &amp; <span class="hljs-string">&quot;</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">&gt;&lt;/a&gt;&quot;</span>
+  nbText <span class="hljs-string">&quot;&lt;br&gt;&quot;</span>
+  nbText <span class="hljs-string">&quot;### &quot;</span> &amp; name &amp; <span class="hljs-string">&quot;&quot;</span>
+  nbText <span class="hljs-string">&quot;&lt;hr /&gt;&quot;</span>
+  nbToc.output.add <span class="hljs-string">&quot;1. &lt;a href=</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">#&quot;</span> &amp; anchorName &amp; <span class="hljs-string">&quot;</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">&gt;&quot;</span> &amp; name &amp; <span class="hljs-string">&quot;&lt;/a&gt;</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span>
+
+<span class="hljs-keyword">template</span> nbSubSection(name:<span class="hljs-built_in">string</span>) =
+  <span class="hljs-keyword">let</span> anchorName = name.toLower.replace(<span class="hljs-string">&quot; &quot;</span>, <span class="hljs-string">&quot;-&quot;</span>)
+  nbText <span class="hljs-string">&quot;&lt;a name=</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">&quot;</span> &amp; anchorName &amp; <span class="hljs-string">&quot;</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">&gt;&lt;/a&gt;&quot;</span>
+  nbText <span class="hljs-string">&quot;&lt;br&gt;&quot;</span>
+  nbText <span class="hljs-string">&quot;#### &quot;</span> &amp; name &amp; <span class="hljs-string">&quot;&quot;</span>
+  nbText <span class="hljs-string">&quot;&lt;hr /&gt;&quot;</span>
+  nbToc.output.add <span class="hljs-string">&quot;    * &lt;a href=</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">#&quot;</span> &amp; anchorName &amp; <span class="hljs-string">&quot;</span><span class="hljs-meta">\&quot;</span><span class="hljs-string">&gt;&quot;</span> &amp; name &amp; <span class="hljs-string">&quot;&lt;/a&gt;</span><span class="hljs-meta">\n</span><span class="hljs-string">&quot;</span>
+
+nbInit
+<span class="hljs-comment">#initCodeTheme()</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;h1&gt;《RPN计算器使用说明》&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;作者：王凌&lt;/li&gt;
+&lt;li&gt;版本：2.1.1&lt;/li&gt;
+&lt;/ul&gt;
+&quot;&quot;&quot;</span>
+
+<span class="hljs-comment"># 生成目录</span>
+addToc
+
+<span class="hljs-comment"># 1. 功能概述章节</span>
+nbNewSection <span class="hljs-string">&quot;功能概述&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;p&gt;RPN计算器是一个基于逆波兰表示法（Reverse Polish Notation）的命令行计算工具，具有以下核心功能：&lt;/p&gt;
+
+&lt;h4&gt;主要特性&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;逆波兰表示法&lt;/strong&gt;：采用后缀表达式，无需括号即可处理复杂运算优先级&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;丰富的数学运算&lt;/strong&gt;：支持四则运算、幂运算、平方根、斐波那契数列、杨辉三角等&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;栈式操作&lt;/strong&gt;：基于栈的数据结构，自动保存中间计算结果&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;完善的错误处理&lt;/strong&gt;：提供清晰的错误提示和异常处理机制&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;跨平台支持&lt;/strong&gt;：兼容Linux、macOS、Windows操作系统&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;批量处理功能&lt;/strong&gt;：支持从文件读取表达式进行批量计算&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;技术特点&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;使用C++11标准编写，代码简洁高效&lt;/li&gt;
+&lt;li&gt;无外部依赖，纯标准库实现&lt;/li&gt;
+&lt;li&gt;支持整数和浮点数混合运算&lt;/li&gt;
+&lt;li&gt;提供栈查看、清空等管理功能&lt;/li&gt;
+&lt;/ul&gt;
+&quot;&quot;&quot;</span>
+
+<span class="hljs-comment"># 2. 安装和编译指南</span>
+nbNewSection <span class="hljs-string">&quot;安装和编译指南&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;p&gt;系统要求&lt;br&gt;
+操作系统：Ubuntu 20.04 及以上版本，或任何支持g++的Linux发行版&lt;br&gt;
+依赖工具：g++ 编译器&lt;/p&gt;
+&quot;&quot;&quot;</span>
+
+nbCode:
+  <span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+安装依赖
+# 更新软件源
+sudo apt update
+
+# 安装g++编译器
+sudo apt install -y g++
+
+# 验证安装
+g++ --version
+&quot;&quot;&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;p&gt;编译程序&lt;br&gt;
+将源代码保存为rpn_calc.cpp后，执行以下命令编译：&lt;/p&gt;
+&quot;&quot;&quot;</span>
+
+nbCode:
+  <span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+# 编译源码
+g++ -std=c++11 -o rpn_calc rpn_calc.cpp
+
+# 运行计算器
+./rpn_calc
+&quot;&quot;&quot;</span>
+
+<span class="hljs-comment"># 3. 基本使用示例</span>
+nbNewSection <span class="hljs-string">&quot;基本使用示例&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;p&gt;RPN计算器使用逆波兰表示法，不需要括号，运算顺序由输入顺序决定。&lt;/p&gt;
+
+&lt;h4&gt;基本使用流程&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;输入数字，按空格分隔&lt;/li&gt;
+&lt;li&gt;输入运算符进行计算&lt;/li&gt;
+&lt;li&gt;计算器自动显示结果&lt;/li&gt;
+&lt;li&gt;使用特殊命令管理计算过程&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;简单示例&lt;/h4&gt;
+&quot;&quot;&quot;</span>
+
+nbCode:
+  <span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+# 启动计算器
+./rpn_calc
+
+# 基本运算
+RPN Calculator &gt; 3 5 +
+结果: 8
+
+RPN Calculator &gt; 10 4 -
+结果: 6
+
+RPN Calculator &gt; 2 4 + 3 *
+结果: 18
+&quot;&quot;&quot;</span>
+
+<span class="hljs-comment"># 4. 所有支持的操作说明</span>
+nbNewSection <span class="hljs-string">&quot;所有支持的操作说明&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;h4&gt;基本四则运算&lt;/h4&gt;
+&quot;&quot;&quot;</span>
+
+nbCode:
+  <span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+&gt; 5 3 +
+结果: 8
+&gt; 10 4 -
+结果: 6
+&gt; 6 7 *
+结果: 42
+&gt; 15 2 /
+结果: 7.5
+&quot;&quot;&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;h4&gt;高级数学运算&lt;/h4&gt;
+&quot;&quot;&quot;</span>
+
+nbCode:
+  <span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+&gt; 16 sqrt
+结果: 4
+&gt; 2 5 ^
+结果: 32
+&gt; 7 fib
+结果: 13
+&gt; 5 2 pascal
+结果: 10
+&quot;&quot;&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;h4&gt;栈操作命令&lt;/h4&gt;
+&quot;&quot;&quot;</span>
+
+nbCode:
+  <span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+&gt; 5 3 7
+&gt; display
+当前栈：5 3 7
+&gt; clear
+栈已清空
+&gt; display
+当前栈：空
+&quot;&quot;&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;h4&gt;其他命令&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;help&lt;/code&gt; - 显示帮助信息&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;q&lt;/code&gt; / &lt;code&gt;quit&lt;/code&gt; - 退出程序&lt;/li&gt;
+&lt;/ul&gt;
+&quot;&quot;&quot;</span>
+
+<span class="hljs-comment"># 5. 错误代码和异常说明</span>
+nbNewSection <span class="hljs-string">&quot;错误代码和异常说明&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;h4&gt;常见错误类型&lt;/h4&gt;
+&quot;&quot;&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;p&gt;栈为空错误&lt;/p&gt;
+&quot;&quot;&quot;</span>
+
+nbCode:
+  <span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+&gt; +
+错误: 栈为空
+&gt; 4 6 +
+结果: 10
+&quot;&quot;&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;p&gt;除零错误&lt;/p&gt;
+&quot;&quot;&quot;</span>
+
+nbCode:
+  <span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+&gt; 10 0 /
+错误: 除零
+&gt; 10 2 /
+结果: 5.0
+&quot;&quot;&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;p&gt;无效操作符错误&lt;/p&gt;
+&quot;&quot;&quot;</span>
+
+nbCode:
+  <span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+&gt; 7 2 #
+错误: 无效操作符
+&gt; 7 2 *
+结果: 14
+&quot;&quot;&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;p&gt;栈不足错误&lt;/p&gt;
+&quot;&quot;&quot;</span>
+
+nbCode:
+  <span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+&gt; 5 *
+错误: 栈不足
+&gt; 5 3 *
+结果: 15
+&quot;&quot;&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;p&gt;无效数字错误&lt;/p&gt;
+&quot;&quot;&quot;</span>
+
+nbCode:
+  <span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+&gt; abc 3 +
+错误: 无效数字
+&gt; 4.5 3 +
+结果: 7.5
+&quot;&quot;&quot;</span>
+
+<span class="hljs-comment"># 6. 示例输入输出</span>
+nbNewSection <span class="hljs-string">&quot;示例输入输出&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;p&gt;完整的使用示例：&lt;/p&gt;
+&quot;&quot;&quot;</span>
+
+nbCode:
+  <span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+# 启动程序
+./rpn_calc
+
+# 基本运算
+RPN Calculator &gt; 12 8 +
+结果: 20
+
+RPN Calculator &gt; 5 *
+结果: 100
+
+# 高级函数
+RPN Calculator &gt; sqrt
+结果: 10.0
+
+# 栈管理
+RPN Calculator &gt; display
+当前栈：10.0
+
+# 错误处理
+RPN Calculator &gt; 0 /
+错误: 除零
+
+# 清空栈
+RPN Calculator &gt; clear
+栈已清空
+
+# 数学序列
+RPN Calculator &gt; 8 fib
+结果: 21
+
+RPN Calculator &gt; 6 3 pascal
+结果: 20
+
+# 获取帮助
+RPN Calculator &gt; help
+================= RPN 计算器帮助 =================
+支持操作符：+（加）、-（减）、*（乘）、/（除）、sqrt（平方根）、^（幂运算）、fib（斐波那契）、pascal（杨辉三角）
+特殊命令：clear（清空栈）、display（显示栈）、help（查看帮助）、q/quit（退出）
+输入规则：操作数与运算符用空格分隔，按回车计算
+================================================
+
+# 退出程序
+RPN Calculator &gt; q
+再见!
+&quot;&quot;&quot;</span>
+
+<span class="hljs-comment"># 7. 使用技巧和注意事项</span>
+nbNewSection <span class="hljs-string">&quot;使用技巧和注意事项&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;h4&gt;使用技巧&lt;/h4&gt;
+
+&lt;p&gt;&lt;strong&gt;分步计算复杂表达式&lt;/strong&gt;&lt;br&gt;
+对于复杂公式如 &lt;code&gt;(3 + 4) * (6 - 2) / 2&lt;/code&gt;，可分步输入：&lt;/p&gt;
+&quot;&quot;&quot;</span>
+
+nbCode:
+  <span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+RPN Calculator &gt; 3 4 +
+结果: 7
+RPN Calculator &gt; 6 2 -
+结果: 4
+RPN Calculator &gt; *
+结果: 28
+RPN Calculator &gt; 2 /
+结果: 14.0
+&quot;&quot;&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;p&gt;&lt;strong&gt;利用栈保存中间结果&lt;/strong&gt;&lt;br&gt;
+栈会自动保留未参与后续运算的结果：&lt;/p&gt;
+&quot;&quot;&quot;</span>
+
+nbCode:
+  <span class="hljs-keyword">discard</span> <span class="hljs-string">&quot;&quot;&quot;
+RPN Calculator &gt; 10 5 +
+结果: 15
+RPN Calculator &gt; 3 *
+结果: 45
+&quot;&quot;&quot;</span>
+
+nbText: <span class="hljs-string">&quot;&quot;&quot;
+&lt;h4&gt;注意事项&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;操作数与运算符必须用&lt;strong&gt;空格分隔&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;支持整数和浮点数混合运算，结果以浮点数形式显示&lt;/li&gt;
+&lt;li&gt;斐波那契数参数建议不超过40&lt;/li&gt;
+&lt;li&gt;杨辉三角行数建议不超过30&lt;/li&gt;
+&lt;li&gt;程序退出后不保存历史记录&lt;/li&gt;
+&lt;/ul&gt;
+&quot;&quot;&quot;</span>
+
+nbSave
+
+</code></pre>
+</section><script>
+function toggleSourceDisplay() {
+  var btn = document.getElementById("show")
+  var source = document.getElementById("source");
+  if (btn.innerHTML=="Show Source") {
+    btn.innerHTML = "Hide Source";
+    source.style.display = "block";
+  } else {
+    btn.innerHTML = "Show Source";
+    source.style.display = "none";
+  }
+}
+</script></body>
+</html>
